@@ -1,11 +1,23 @@
+using System;
+using System.Collections.Generic;
+
 namespace Rst.Interfaces
 {
-    public interface IStateMachine
+    public interface IStateMachine : IEnumerator<IState>
     {
-        public StateMachine AddTransition<TFrom, TTo>(ITransition<TFrom, TTo> transition)
+        public IStateMachine AddTransition<TFrom, TTo>(
+            ITransition<TFrom, TTo> transition)
+            where TFrom : IState
+            where TTo : IState;
+        
+        public IStateMachine AddTransition<TFrom, TTo>(ITransition<TFrom, TTo> transition, Action<ITransitionBuilder> action)
             where TFrom : IState
             where TTo : IState;
 
-        public bool MoveNext(ITransition<IState, IState> transition);
+        public bool MoveNext<TFrom, TTo>(ITransition<TFrom, TTo> transition)
+            where TFrom : IState
+            where TTo : IState;
+
+        public bool IsValid();
     }
 }

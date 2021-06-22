@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst", "src\Rst\Rst.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestButtonStateMachine", "tests\TestButtonStateMachine\TestButtonStateMachine.csproj", "{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst.Gen", "src\Rst.Gen\Rst.Gen.csproj", "{B40EDA5F-25D5-4B96-A56E-8D6D84846F86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,9 +24,14 @@ Global
 		{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40EDA5F-25D5-4B96-A56E-8D6D84846F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40EDA5F-25D5-4B96-A56E-8D6D84846F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40EDA5F-25D5-4B96-A56E-8D6D84846F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40EDA5F-25D5-4B96-A56E-8D6D84846F86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88EF15F6-41C8-4F19-A697-180BD902B630} = {663323CE-9FB0-4F01-8CF0-8C129591E711}
 		{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5} = {B59A54FC-60CE-4B65-847A-E9732794EEB0}
+		{B40EDA5F-25D5-4B96-A56E-8D6D84846F86} = {663323CE-9FB0-4F01-8CF0-8C129591E711}
 	EndGlobalSection
 EndGlobal

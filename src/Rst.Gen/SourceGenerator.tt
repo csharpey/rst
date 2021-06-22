@@ -1,0 +1,26 @@
+<#@ template debug="true" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+using Microsoft.CodeAnalysis;
+
+namespace <#= nameof(Rst.Gen) #>
+{
+    [Generator]
+    public class SourceGenerator : ISourceGenerator
+    {
+        private const string firstText = @"
+<#@ include file="$(MSBuildProjectDirectory)\Transition.ttinclude" #>
+";
+        
+        public void Initialize(GeneratorInitializationContext context)
+        {
+            context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+        }
+        
+        public void Execute(GeneratorExecutionContext context)
+        {
+            if (context.SyntaxReceiver is not SyntaxReceiver) return;
+
+            context.AddSource($"{nameof(SourceGenerator)}.cs", firstText);
+        }
+    }
+}

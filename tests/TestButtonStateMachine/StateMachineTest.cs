@@ -1,4 +1,6 @@
 using Rst;
+using Rst.Interfaces;
+using TestButtonStateMachine.Impl;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -8,31 +10,45 @@ namespace TestButtonStateMachine
     {
         private readonly ITestOutputHelper _output;
 
+        private readonly On _on;
+        private readonly Off _off;
+
+        private readonly OffTransition _offTransition;
+        private readonly OnTransition _onTransition;
+        private readonly IStateMachine _machine;
+
         public StateMachineTest(ITestOutputHelper output)
         {
             _output = output;
+            
+            _on = new On(_output);
+            _off = new Off(_output);
+
+            _offTransition = new OffTransition(_on, _off);
+            _onTransition = new OnTransition(_off, _on);
+            
+            _offTransition.OnTriggered += delegate
+            {
+                _output.WriteLine($"{nameof(OffTransition)} {nameof(OffTransition.Triggered)}");
+            };
+            _machine = new StateMachine(_on)
+                .AddTransition(_offTransition, delegate { })
+                .AddTransition(_onTransition);
+        }
+        
+        [Fact]
+        public void TestValidation()
+        {
+            Assert.True(_machine.IsValid());
         }
 
         [Fact]
-        public void TestInit()
+        public void TestEnumerator()
         {
-            var on = new On(_output);
-            var off = new Off(_output);
-
-            var toOff = new OffTransition(on, off);
-            var toOn = new OnTransition(off, on);
-            
-            var m = new StateMachine(on)
-                .AddTransition(toOff)
-                .AddTransition(toOn);
-            
-            Assert.True(m.MoveNext(toOff));
-            
-            Assert.Equal(m.Current, off);
-            
-            Assert.True(m.MoveNext(toOn));
-            
-            Assert.Equal(m.Current, on);
+            Assert.True(_machine.MoveNext(_offTransition));
+            Assert.Equal(_machine.Current, _off);
+            Assert.True(_machine.MoveNext(_onTransition));
+            Assert.Equal(_machine.Current, _on);
         }
     }
 }

@@ -1,13 +1,13 @@
 using Rst;
 using Xunit.Abstractions;
 
-namespace TestButtonStateMachine
+namespace TestButtonStateMachine.Impl
 {
-    public class Off : State
+    public class On : State
     {
         private readonly ITestOutputHelper _output;
 
-        public Off(ITestOutputHelper output)
+        public On(ITestOutputHelper output)
         {
             _output = output;
 
@@ -19,7 +19,7 @@ namespace TestButtonStateMachine
         {
             _output.WriteLine(
                 "{0} {1}", 
-                nameof(Off), 
+                nameof(On), 
                 nameof(OnEntryLog));
         }
 
@@ -27,8 +27,9 @@ namespace TestButtonStateMachine
         {
             _output.WriteLine(
                 "{0} {1}", 
-                nameof(Off), 
+                nameof(On), 
                 nameof(OnExitLog));
         }
+        
     }
 }

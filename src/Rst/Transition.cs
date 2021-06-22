@@ -1,4 +1,3 @@
-using System;
 using Rst.Interfaces;
 
 namespace Rst
@@ -7,13 +6,26 @@ namespace Rst
         where TTo : IState
         where TFrom : IState
     {
+        public event ITransition<TFrom, TTo>.Trigger OnTriggered;
+        
         public TFrom From { get; }
         public TTo To { get; }
 
-        protected Transition(TFrom from, TTo to)
+        protected Transition()
+        {
+            From = default;
+            To = default;
+        }
+
+        public Transition(TFrom from, TTo to)
         {
             From = from;
             To = to;
+        }
+
+        public virtual void Triggered()
+        {
+            OnTriggered?.Invoke();
         }
     }
 }
