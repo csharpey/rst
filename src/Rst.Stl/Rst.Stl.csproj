@@ -4,4 +4,19 @@
         <TargetFramework>net5.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Update="EnumerableExtension.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>EnumerableExtension.cs</LastGenOutput>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="EnumerableExtension.cs">
+        <AutoGen>True</AutoGen>
+        <DesignTime>True</DesignTime>
+        <DependentUpon>EnumerableExtension.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>

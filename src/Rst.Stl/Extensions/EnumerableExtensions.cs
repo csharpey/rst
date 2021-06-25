@@ -11,7 +11,7 @@ namespace Rst.Stl.Extensions
     /// <summary>
     /// 
     /// </summary>
-    public static class EnumerableExtensions
+    public static partial class EnumerableExtensions
     {
         /// <summary>
         /// 
@@ -75,42 +75,36 @@ namespace Rst.Stl.Extensions
 
             var i = 0;
             var count = value.Count() - 1;
-            var stack = new Stack<int>(2);
 
-            bool CheckTail()
-            {
-                if (!s.Current.Equals(v.Current))
-                    return false;
-                
-                if (v.MoveNext())
-                    return true;
-                
-                stack.Push(i);
-                v.Reset();
-                v.MoveNext();
-                return true;
-            }
-            
             while (s.MoveNext())
             {
                 Debug.Assert(s.Current is not null);
-                
-                if (!CheckTail())
+
+                if (s.Current.Equals(v.Current))
+                {
+                    if (!v.MoveNext())
+                    {
+                        yield return new KeyValuePair<int, int>(i - count, i);
+                    }
+                }
+                else
                 {
                     v.Reset();
                     v.MoveNext();
-                    CheckTail();
+                    
+                    if (s.Current.Equals(v.Current))
+                    {
+                        if (!v.MoveNext())
+                        {
+                            yield return new KeyValuePair<int, int>(i - count, i);
+                        }
+                    }
                 }
 
                 checked
                 {
                     i++;
                 }
-            }
-
-            foreach (var ii in stack)
-            {
-                yield return new KeyValuePair<int, int>(ii - count, ii);
             }
         }
 

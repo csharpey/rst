@@ -1,0 +1,45 @@
+<#@ template language="C#" #>
+<#@ import namespace="Rst.Stl" #>
+using System;
+using System.Collections.Generic;
+        
+namespace Rst.Stl.Extensions
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public static partial class EnumerableExtensions
+    {
+<#
+    foreach (var type in new [] { nameof(Double), nameof(Int32) })
+    {
+    #>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static <#= type #> MaxSubSum(this IEnumerable<<#= type #>> source)
+        {
+            <#= type #> i = 0;
+            <#= type #> s = 0;
+
+            foreach (var m in source)
+            {
+                i += m;
+                if (i < 0) 
+                    i = 0;
+
+                if (i > s)
+                {
+                    s = i;
+                }
+            }
+            
+            return s;
+        }
+<#
+    }
+    #>
+    }
+}
