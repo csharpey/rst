@@ -2,7 +2,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 using System;
 
-namespace <#= nameof(Gen) #>
+namespace Rst.Gen
 {
 }
 <#+

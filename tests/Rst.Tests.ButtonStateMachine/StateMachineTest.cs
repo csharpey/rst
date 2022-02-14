@@ -1,10 +1,9 @@
-using Rst;
 using Rst.Interfaces;
-using TestButtonStateMachine.Impl;
+using Rst.Tests.ButtonStateMachine.Impl;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace TestButtonStateMachine
+namespace Rst.Tests.ButtonStateMachine
 {
     public class StateMachineTest
     {

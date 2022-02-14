@@ -1,11 +1,7 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using Rst;
 using Rst.Interfaces;
 using Xunit.Abstractions;
 
-namespace TestButtonStateMachine.Impl
+namespace Rst.Tests.ButtonStateMachine.Impl
 {
     public class On : State
     {

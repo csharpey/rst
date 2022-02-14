@@ -6,13 +6,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{663323CE-9FB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst", "src\Rst\Rst.csproj", "{88EF15F6-41C8-4F19-A697-180BD902B630}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestButtonStateMachine", "tests\TestButtonStateMachine\TestButtonStateMachine.csproj", "{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst.Tests.ButtonStateMachine", "tests\Rst.Tests.ButtonStateMachine\Rst.Tests.ButtonStateMachine.csproj", "{DC7FA73F-3D59-4863-AE59-B5B6A4CAB6F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst.Gen", "src\Rst.Gen\Rst.Gen.csproj", "{B40EDA5F-25D5-4B96-A56E-8D6D84846F86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst.Stl", "src\Rst.Stl\Rst.Stl.csproj", "{155AAC68-EED9-4902-8C0A-8ED9D57E5F1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRstStl", "tests\TestRstStl\TestRstStl.csproj", "{54FFA5C8-E8AC-4673-81AB-C9CDADC69620}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rst.Stl.Tests", "tests\Rst.Stl.Tests\Rst.Stl.Tests.csproj", "{54FFA5C8-E8AC-4673-81AB-C9CDADC69620}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bench", "bench", "{BE41635E-2DFF-40DE-ADD0-C1945E3979A1}"
 EndProject

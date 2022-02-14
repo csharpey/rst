@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Rst;
 
 namespace Rst.Gen
 {

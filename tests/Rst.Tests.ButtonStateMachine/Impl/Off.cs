@@ -1,9 +1,8 @@
 using System.Threading;
-using Rst;
 using Rst.Interfaces;
 using Xunit.Abstractions;
 
-namespace TestButtonStateMachine.Impl
+namespace Rst.Tests.ButtonStateMachine.Impl
 {
     public class Off : State
     {

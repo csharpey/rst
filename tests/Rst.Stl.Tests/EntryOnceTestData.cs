@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TestRstStl
+namespace Rst.Stl.Tests
 {
     public class EntryOnceTestData : IEnumerable<object[]>
     {

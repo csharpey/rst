@@ -2,7 +2,7 @@ using System;
 using Rst.Stl.Extensions;
 using Xunit;
 
-namespace TestRstStl
+namespace Rst.Stl.Tests
 {
     public class TestMaxSubSum
     {

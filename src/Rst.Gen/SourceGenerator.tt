@@ -1,8 +1,9 @@
 <#@ template debug="true" hostspecific="false" language="C#" #>
 <#@ output extension=".cs" #>
 using Microsoft.CodeAnalysis;
+using Rst;
 
-namespace <#= nameof(Rst.Gen) #>
+namespace Rst.Gen
 {
     [Generator]
     public class SourceGenerator : ISourceGenerator
