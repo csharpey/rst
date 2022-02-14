@@ -9,41 +9,41 @@ namespace Rst
 {
     public class StateMachine : IStateMachine
     {
-        private readonly ConcurrentDictionary<IState, ITransition<IState, IState>> _transitions;
-        
+        private readonly ConcurrentDictionary<IState, IList<ITransition<IState, IState>>> _transitions;
+        public IWorkflow Workflow { get; private set; }
+
         public IState Current { get; private set; }
 
         public StateMachine(IState state)
         {
             Current = state;
-            _transitions = new ConcurrentDictionary<IState, ITransition<IState, IState>>();
+            _transitions = new ConcurrentDictionary<IState, IList<ITransition<IState, IState>>>();
+            Workflow = new Workflow(this);
         }
 
-        public IStateMachine AddTransition<TFrom, TTo>(ITransition<TFrom, TTo> transition) 
-            where TFrom : IState 
-            where TTo : IState
-        {
-            return AddTransition(transition, delegate { });
-        }
-
-        public IStateMachine AddTransition<TFrom, TTo>(
-            ITransition<TFrom, TTo> transition, 
+        public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom from, TTo to,
             Action<ITransitionBuilder> action)
             where TFrom : IState
             where TTo : IState
         {
-            Debug.Assert(transition is ITransition<IState, IState>);
-            var t = (ITransition<IState, IState>) transition;
+            var t = new Transition<IState, IState>(from, to);
+
             var builder = new TransitionBuilder(t);
             action.Invoke(builder);
-            
-            if(!_transitions.TryAdd(transition.From, t))
-                throw new InvalidOperationException();
-            
-            return this;
+
+            if (!_transitions.ContainsKey(from))
+            {
+                _transitions.TryAdd(from, new List<ITransition<IState, IState>>());
+            }
+
+            _transitions[from].Add(t);
+
+
+            return t;
         }
+
         public bool MoveNext<TFrom, TTo>(ITransition<TFrom, TTo> transition)
-            where TFrom : IState 
+            where TFrom : IState
             where TTo : IState
         {
             Debug.Assert(Current is not null);
@@ -51,31 +51,23 @@ namespace Rst
             if (!transition.From.Equals(Current))
                 return false;
 
-            var exist = _transitions.TryGetValue(Current, out var state);
-            
-            if (!exist || state.From != Current) 
+            var exist = _transitions.TryGetValue(Current, out var states);
+            Debug.Assert(states != null);
+
+            var state = states[states.IndexOf((ITransition<IState, IState>)transition)];
+
+            if (!exist || state.From != Current)
                 return false;
-            
+
             state.Triggered();
-            
+
             Current.Out();
             Current = state.To;
-            
+
             Debug.Assert(Current is not null);
-            
+
             Current.In();
-            
-            return true;
-        }
 
-        public bool MoveNext<T>(T t = default)
-            where T : IState
-        {
-            return MoveNext(typeof(T));
-        }
-
-        public bool MoveNext(Type type)
-        {
             return true;
         }
 

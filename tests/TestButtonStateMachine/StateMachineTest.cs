@@ -13,29 +13,29 @@ namespace TestButtonStateMachine
         private readonly On _on;
         private readonly Off _off;
 
-        private readonly OffTransition _offTransition;
-        private readonly OnTransition _onTransition;
         private readonly IStateMachine _machine;
 
         public StateMachineTest(ITestOutputHelper output)
         {
             _output = output;
-            
+
             _on = new On(_output);
             _off = new Off(_output);
 
-            _offTransition = new OffTransition(_on, _off);
-            _onTransition = new OnTransition(_off, _on);
+            _machine = new StateMachine(_on);
             
-            _offTransition.OnTriggered += delegate
+            var off = _machine.AddTransition(_on, _off, delegate { });
+            var on = _machine.AddTransition(_off, _on, delegate { });
+            
+            _machine.Workflow.Add(off);
+            _machine.Workflow.Add(on);
+            
+            off.OnTriggered += delegate
             {
-                _output.WriteLine($"{nameof(OffTransition)} {nameof(OffTransition.Triggered)}");
+                _output.WriteLine($"{nameof(off)} {nameof(off.Triggered)}");
             };
-            _machine = new StateMachine(_on)
-                .AddTransition(_offTransition, delegate { })
-                .AddTransition(_onTransition);
         }
-        
+
         [Fact]
         public void TestValidation()
         {
@@ -45,9 +45,9 @@ namespace TestButtonStateMachine
         [Fact]
         public void TestEnumerator()
         {
-            Assert.True(_machine.MoveNext(_offTransition));
+            Assert.True(_machine.Workflow.MoveNext());
             Assert.Equal(_machine.Current, _off);
-            Assert.True(_machine.MoveNext(_onTransition));
+            Assert.True(_machine.Workflow.MoveNext());
             Assert.Equal(_machine.Current, _on);
         }
     }
