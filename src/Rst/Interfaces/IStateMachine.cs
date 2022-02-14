@@ -14,8 +14,6 @@ namespace Rst.Interfaces
             where TFrom : IState
             where TTo : IState;
         
-        public IWorkflow Workflow { get; }
-
         public bool IsValid();
     }
 }

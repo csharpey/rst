@@ -2,16 +2,16 @@ using Rst.Interfaces;
 
 namespace Rst
 {
-    public class Transition<TFrom, TTo> : ITransition<TFrom, TTo> 
+    public sealed class Transition<TFrom, TTo> : ITransition<TFrom, TTo>
         where TTo : IState
         where TFrom : IState
     {
         public event ITransition<TFrom, TTo>.Trigger OnTriggered;
-        
+
         public TFrom From { get; }
         public TTo To { get; }
 
-        protected Transition()
+        private Transition()
         {
             From = default;
             To = default;
@@ -23,7 +23,7 @@ namespace Rst
             To = to;
         }
 
-        public virtual void Triggered()
+        public void Triggered()
         {
             OnTriggered?.Invoke();
         }

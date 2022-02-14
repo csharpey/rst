@@ -1,4 +1,8 @@
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Rst;
+using Rst.Interfaces;
 using Xunit.Abstractions;
 
 namespace TestButtonStateMachine.Impl
@@ -6,6 +10,7 @@ namespace TestButtonStateMachine.Impl
     public class On : State
     {
         private readonly ITestOutputHelper _output;
+        public int State = 0;
 
         public On(ITestOutputHelper output)
         {
@@ -15,15 +20,16 @@ namespace TestButtonStateMachine.Impl
             OnExit += OnExitLog;
         }
 
-        private void OnEntryLog()
+        private void OnEntryLog(IState from)
         {
             _output.WriteLine(
-                "{0} {1}", 
+                "{0} {1} State {2}", 
                 nameof(On), 
-                nameof(OnEntryLog));
+                nameof(OnEntryLog), State);
         }
 
-        private void OnExitLog()
+        
+        private void OnExitLog(IState to)
         {
             _output.WriteLine(
                 "{0} {1}", 

@@ -14,6 +14,7 @@ namespace TestButtonStateMachine
         private readonly Off _off;
 
         private readonly IStateMachine _machine;
+        private readonly IWorkflow _workflow;
 
         public StateMachineTest(ITestOutputHelper output)
         {
@@ -23,12 +24,13 @@ namespace TestButtonStateMachine
             _off = new Off(_output);
 
             _machine = new StateMachine(_on);
+            _workflow = new Workflow(_machine);
             
             var off = _machine.AddTransition(_on, _off, delegate { });
             var on = _machine.AddTransition(_off, _on, delegate { });
             
-            _machine.Workflow.Add(off);
-            _machine.Workflow.Add(on);
+            _workflow.Add(off);
+            _workflow.Add(on);
             
             off.OnTriggered += delegate
             {
@@ -45,9 +47,9 @@ namespace TestButtonStateMachine
         [Fact]
         public void TestEnumerator()
         {
-            Assert.True(_machine.Workflow.MoveNext());
+            Assert.True(_workflow.MoveNext());
             Assert.Equal(_machine.Current, _off);
-            Assert.True(_machine.Workflow.MoveNext());
+            Assert.True(_workflow.MoveNext());
             Assert.Equal(_machine.Current, _on);
         }
     }

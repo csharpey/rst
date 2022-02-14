@@ -3,10 +3,10 @@ namespace Rst.Interfaces
 {
     public interface IState
     {
-        public delegate void Enter();
-        public delegate void Exit();
+        public delegate void Enter(IState from);
+        public delegate void Exit(IState to);
 
-        public void In();
-        public void Out();
+        public void In(IState from);
+        public void Out(IState to);
     }
 }

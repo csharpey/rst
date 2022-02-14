@@ -10,7 +10,6 @@ namespace Rst
     public class StateMachine : IStateMachine
     {
         private readonly ConcurrentDictionary<IState, IList<ITransition<IState, IState>>> _transitions;
-        public IWorkflow Workflow { get; private set; }
 
         public IState Current { get; private set; }
 
@@ -18,10 +17,9 @@ namespace Rst
         {
             Current = state;
             _transitions = new ConcurrentDictionary<IState, IList<ITransition<IState, IState>>>();
-            Workflow = new Workflow(this);
         }
 
-        public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom from, TTo to,
+        public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom @from, TTo to,
             Action<ITransitionBuilder> action)
             where TFrom : IState
             where TTo : IState
@@ -61,12 +59,13 @@ namespace Rst
 
             state.Triggered();
 
-            Current.Out();
+            Current.Out(state.To);
+            
             Current = state.To;
 
             Debug.Assert(Current is not null);
 
-            Current.In();
+            Current.In(state.From);
 
             return true;
         }

@@ -1,4 +1,6 @@
+using System.Threading;
 using Rst;
+using Rst.Interfaces;
 using Xunit.Abstractions;
 
 namespace TestButtonStateMachine.Impl
@@ -15,20 +17,30 @@ namespace TestButtonStateMachine.Impl
             OnExit += OnExitLog;
         }
 
-        private void OnEntryLog()
+        private void OnEntryLog(IState from)
         {
+            switch (from)
+            {
+                case On on:
+                    Interlocked.Increment(ref on.State);
+                    break;
+                default:
+                    _output.WriteLine("Unhandled state");
+                    break;
+            }
+
             _output.WriteLine(
-                "{0} {1}", 
-                nameof(Off), 
-                nameof(OnEntryLog));
+                "{0} {1} From {2}",
+                nameof(Off),
+                nameof(OnEntryLog), from.GetType());
         }
 
-        private void OnExitLog()
+        private void OnExitLog(IState to)
         {
             _output.WriteLine(
-                "{0} {1}", 
-                nameof(Off), 
-                nameof(OnExitLog));
+                "{0} {1} To {2}",
+                nameof(Off),
+                nameof(OnExitLog), to.GetType());
         }
     }
 }
