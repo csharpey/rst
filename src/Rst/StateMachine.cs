@@ -19,6 +19,11 @@ namespace Rst
             _transitions = new ConcurrentDictionary<IState, IList<ITransition<IState, IState>>>();
         }
 
+        public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom @from, TTo to) where TFrom : IState where TTo : IState
+        {
+            return AddTransition(from, to, delegate { });
+        }
+
         public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom @from, TTo to,
             Action<ITransitionBuilder> action)
             where TFrom : IState
@@ -62,7 +67,8 @@ namespace Rst
             Current.Out(state.To);
             
             Current = state.To;
-
+            
+            Debug.WriteLine(Current, nameof(StateMachine));
             Debug.Assert(Current is not null);
 
             Current.In(state.From);

@@ -1,11 +1,11 @@
 using Rst.Interfaces;
-using Rst.Tests.ButtonStateMachine.Impl;
+using Rst.Tests.StateMachine.Button.Impl;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Rst.Tests.ButtonStateMachine
+namespace Rst.Tests.StateMachine.Button
 {
-    public class StateMachineTest
+    public class ButtonTest
     {
         private readonly ITestOutputHelper _output;
 
@@ -15,14 +15,14 @@ namespace Rst.Tests.ButtonStateMachine
         private readonly IStateMachine _machine;
         private readonly IWorkflow _workflow;
 
-        public StateMachineTest(ITestOutputHelper output)
+        public ButtonTest(ITestOutputHelper output)
         {
             _output = output;
 
             _on = new On(_output);
             _off = new Off(_output);
 
-            _machine = new StateMachine(_on);
+            _machine = new Rst.StateMachine(_on);
             _workflow = new Workflow(_machine);
             
             var off = _machine.AddTransition(_on, _off, delegate { });

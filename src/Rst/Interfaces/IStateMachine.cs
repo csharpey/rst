@@ -5,6 +5,9 @@ namespace Rst.Interfaces
 {
     public interface IStateMachine : IEnumerator<IState>
     {
+        public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom @from, TTo to)
+            where TFrom : IState
+            where TTo : IState;
         public Transition<IState, IState> AddTransition<TFrom, TTo>(TFrom @from, TTo to,
             Action<ITransitionBuilder> action)
             where TFrom : IState

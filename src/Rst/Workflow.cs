@@ -28,9 +28,7 @@ namespace Rst
             if (!success) return false;
             
             Current = transition;
-            _machine.MoveNext(transition);
-
-            return true;
+            return _machine.MoveNext(transition);
         }
 
         public void Reset()
