@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NSwag.MSBuild" Version="13.15.10" PrivateAssets="all"/>
+    </ItemGroup>
+    <ItemDefinitionGroup Condition=" '$(Language)' == 'C#' ">
+        <JsonSchema>
+        </JsonSchema>
+    </ItemDefinitionGroup>
+    <PropertyGroup>
+        <RootFolder Condition="'$(RootFolder)' == ''">$(MSBuildProjectDirectory)</RootFolder>
+        <JsonSchemaNamespace Condition="'$(JsonSchemaNamespace)' == ''">$(RootNamespace).Messages.Json</JsonSchemaNamespace>
+    </PropertyGroup>
+</Project>

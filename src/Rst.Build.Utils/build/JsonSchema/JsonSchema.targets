@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <Target Name="JsonSchemaTask" Inputs="@(JsonSchema)" Outputs="@(JsonSchema->'$(IntermediateOutputPath)%(RelativeDir)%(Filename).cs')" BeforeTargets="CoreCompile">
+
+        <Exec Command="dotnet nswag jsonschema2csclient \
+         /input:%(JsonSchema.Identity) \
+         /output:@(JsonSchema->'$(IntermediateOutputPath)%(RelativeDir)%(Filename).cs') \
+         /name:%(JsonSchema.Filename) \
+         /namespace:@(JsonSchema->'$(RootNamespace)/%(RelativeDir)Generated'->Replace('/', '.'))" />
+        <ItemGroup>
+            <Compile Include="@(JsonSchema->'$(IntermediateOutputPath)%(RelativeDir)/%(Filename).cs')" />
+        </ItemGroup>
+    </Target>
+</Project>
