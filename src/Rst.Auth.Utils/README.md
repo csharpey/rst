@@ -10,6 +10,14 @@
 
 ## Services
 
+- `InMemoryLTree` requirements verification
+
+```c#
+services.AddInMemoryClaimRequirements();
+```
+
+⚠ Not fully supported ️
+
 - npgsql based requirements verification
 
 ```c#
