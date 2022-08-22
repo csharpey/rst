@@ -5,7 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Version>0.0.1</Version>
-        <Authors>nkupreenkov</Authors>
+        <Authors>kupns-aka-kupa</Authors>
+        <Company>csharpey</Company>
+        <PackageDescription>Common auth utils</PackageDescription>
+        <RepositoryUrl>https://github.com/csharpey/rst</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>

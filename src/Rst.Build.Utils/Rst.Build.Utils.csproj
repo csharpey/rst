@@ -5,7 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Version>0.0.1</Version>
+        <Authors>kupns-aka-kupa</Authors>
+        <Company>csharpey</Company>
         <Description>Code generation utils</Description>
+        <RepositoryUrl>https://github.com/csharpey/rst</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoBuild>true</NoBuild>
