@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Version>0.0.1</Version>
+        <Authors>kupns-aka-kupa</Authors>
+        <Company>csharpey</Company>
+        <PackageDescription>Http client usefull handlers</PackageDescription>
+        <RepositoryUrl>https://github.com/csharpey/rst</RepositoryUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="IdentityModel.OidcClient" Version="5.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
+      <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Options" />
+    </ItemGroup>
+
+</Project>
