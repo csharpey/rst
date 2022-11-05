@@ -16,12 +16,13 @@ public class AuthHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        await _authenticationStorage.Pass(request);
+        if (request.Headers.Authorization is null)
+            await _authenticationStorage.PassAsync(request, cancellationToken);
         var response = await base.SendAsync(request, cancellationToken);
 
         if (response.StatusCode != HttpStatusCode.Unauthorized) return response;
-        
-        await _authenticationStorage.Refresh(request);
+
+        await _authenticationStorage.RefreshAsync(request, cancellationToken);
         response = await base.SendAsync(request, cancellationToken);
 
         return response;

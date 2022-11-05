@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,70 +11,116 @@ using Rst.Handlers.Interfaces;
 
 namespace Rst.Handlers;
 
+/// <inheritdoc />
 public class JwtAuthenticationStorage : IAuthenticationStorage
 {
-    private readonly List<CancellationTokenSource> _tokenSources = new();
+    private enum TokenRequestState : long
+    {
+        Uninitialized,
+        Ready,
+        Loading
+    }
+
+    private static readonly AutoResetEvent Event = new(false);
+    private static long _state = (long)TokenRequestState.Uninitialized;
+    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
+
     private readonly ClientCredentialsTokenRequest _tokenRequest;
+    private readonly IHttpContextAccessor _accessor;
     private readonly IDistributedCache _cache;
     private readonly HttpClient _client;
     private readonly ILogger<JwtAuthenticationStorage> _logger;
 
     private const string TokenKey = "5709395A-4800-4502-BBC9-A7B2EF651887";
 
+    /// <summary>
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="logger"></param>
+    /// <param name="cache"></param>
+    /// <param name="client"></param>
+    /// <param name="accessor"></param>
     public JwtAuthenticationStorage(
         IOptions<ClientCredentialsTokenRequest> options,
         ILogger<JwtAuthenticationStorage> logger,
         IDistributedCache cache,
-        HttpClient client)
+        HttpClient client, IHttpContextAccessor accessor)
     {
         _logger = logger;
         _cache = cache;
         _tokenRequest = options.Value;
         _client = client;
+        _accessor = accessor;
     }
 
-    public async Task Pass(HttpRequestMessage httpRequestMessage)
+    /// <inheritdoc />
+    public async Task PassAsync(HttpRequestMessage httpRequestMessage, CancellationToken token)
     {
-        httpRequestMessage.Headers.Authorization = await Get();
+        httpRequestMessage.Headers.Authorization = await TokenAsync(token);
     }
 
-    private async Task<AuthenticationHeaderValue> Get()
+    /// <inheritdoc />
+    public async Task<AuthenticationHeaderValue> TokenAsync(CancellationToken token)
     {
-        var token = await _cache.GetStringAsync(TokenKey);
-        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token ?? string.Empty);
+        if (Interlocked.Read(ref _state) == (long)TokenRequestState.Loading)
+        {
+            await Task.Yield();
+            Event.WaitOne(Timeout);
+        }
+
+        var accessToken = await _cache.GetStringAsync(TokenKey, token: token);
+        Event.Reset();
+        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken ?? string.Empty);
     }
 
-    public async Task Refresh(HttpRequestMessage httpRequestMessage)
+    /// <inheritdoc />
+    public async Task RefreshAsync(HttpRequestMessage httpRequestMessage, CancellationToken token)
     {
-        using var source = new CancellationTokenSource();
+        long state;
+        if ((state = Interlocked.Read(ref _state)) == (long)TokenRequestState.Loading)
+        {
+            await PassAsync(httpRequestMessage, token);
+            return;
+        }
 
-        _tokenSources.Add(source);
+        void SetState(TokenRequestState newState)
+        {
+            while ((state = Interlocked.CompareExchange(ref _state, (long)newState, state)) != (long)newState)
+            {
+            }
+        }
+
+        SetState(TokenRequestState.Loading);
 
         try
         {
-            await Refresh(source.Token);
+            await Refresh(token);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException e)
         {
-            /* ignore */
+            _logger.LogDebug(e, "Refreshing token task has been canceled");
+            throw;
         }
         finally
         {
-            _tokenSources.Clear();
+            SetState(TokenRequestState.Ready);
+            Event.Set();
         }
 
-        await Pass(httpRequestMessage);
+        await PassAsync(httpRequestMessage, token);
     }
 
     private async Task Refresh(CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-
         using (_logger.BeginScope("Address {Address}", _tokenRequest.Address))
         using (_logger.BeginScope("ClientId {ClientId}", _tokenRequest.ClientId))
         {
-            var response = await _client.RequestClientCredentialsTokenAsync(_tokenRequest, token);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
 
+            _logger.LogDebug("Refreshing token in progress");
+            var response = await _client.RequestClientCredentialsTokenAsync(_tokenRequest, token);
             if (response.HttpStatusCode == HttpStatusCode.OK)
             {
                 await _cache.SetStringAsync(TokenKey, response.AccessToken, token);
@@ -83,10 +131,11 @@ public class JwtAuthenticationStorage : IAuthenticationStorage
                 _logger.LogError("StatusCode {StatusCode}", response.HttpStatusCode);
             }
 
-            foreach (var source in _tokenSources)
-            {
-                source.Cancel();
-            }
+            stopwatch.Stop();
+
+            RequestTokenEventSource.Log.TokenRequested(
+                _accessor.HttpContext?.TraceIdentifier ?? string.Empty,
+                stopwatch.ElapsedMilliseconds);
         }
     }
 }
